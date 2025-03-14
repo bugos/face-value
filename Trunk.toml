@@ -16,15 +16,10 @@ command_arguments = ["-c", "mkdir -p dist"]
 [watch]
 watch = ["src", "index.html"]
 
-# Configure inlining
+# Configure serving
 [serve]
 port = 8080
 
-# Enable inlining of all assets
-[tools]
-wasm_bindgen = { version = "0.2.100" }
-
-# Configure inlining
-[[proxy]]
-rewrite = "/pkg/"
-backend = "inline"
+# Enable asset inlining
+[build.target.release]
+inline = true
