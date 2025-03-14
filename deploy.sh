@@ -27,9 +27,9 @@ cat > deploy/test.html << 'EOL'
     <h1>Face Value Calculator - Test Links</h1>
     <div class="link-group">
         <h2>Example Links:</h2>
-        <a href="index.html#amount=1000&interest=5&start_date=2023-01-01">$1,000 at 5% from 2023-01-01</a>
-        <a href="index.html#amount=5000&interest=3.5&start_date=2024-01-01">$5,000 at 3.5% from 2024-01-01</a>
-        <a href="index.html#amount=10000&interest=7&start_date=2022-06-15">$10,000 at 7% from 2022-06-15</a>
+        <a href="https://bugos.github.io/face-value/#amount=1000&interest=5&start_date=2023-01-01">$1,000 at 5% from 2023-01-01</a>
+        <a href="https://bugos.github.io/face-value/#amount=5000&interest=3.5&start_date=2024-01-01">$5,000 at 3.5% from 2024-01-01</a>
+        <a href="https://bugos.github.io/face-value/#amount=10000&interest=7&start_date=2022-06-15">$10,000 at 7% from 2022-06-15</a>
     </div>
     <div class="link-group">
         <h2>Instructions:</h2>
@@ -41,9 +41,13 @@ cat > deploy/test.html << 'EOL'
             <li><code>start_date</code>: Start date in YYYY-MM-DD format</li>
         </ul>
     </div>
+    <p class="mt-4">
+        <a href="https://github.com/bugos/face-value">View source on GitHub</a>
+    </p>
 </body>
 </html>
 EOL
 
 echo "Deployment files are ready in the 'deploy' directory."
-echo "You can open deploy/test.html directly in your browser!"
+echo "Your app will be available at: https://bugos.github.io/face-value/"
+echo "You can view the deployment status at: https://github.com/bugos/face-value/actions"
