@@ -1,7 +1,13 @@
 #!/bin/bash
 
+function build_wasm() {
+    echo "Building WebAssembly files..."
+    trunk build
+}
+
 function test_dev() {
     echo "Testing development build..."
+    build_wasm
     trunk serve --open
 }
 

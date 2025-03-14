@@ -2,7 +2,13 @@ use chrono::{NaiveDate, Utc};
 use dioxus::prelude::*;
 
 fn main() {
+    // Initialize panic hook for better error messages
+    console_error_panic_hook::set_once();
+
+    // Initialize logging
     wasm_logger::init(wasm_logger::Config::default());
+
+    // Launch the app
     dioxus_web::launch(app);
 }
 
