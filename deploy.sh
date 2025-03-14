@@ -1,16 +1,18 @@
 #!/bin/bash
 
-# Build the release version with inlined assets
-trunk build --release
+# Build the WASM module
+wasm-pack build --target web
 
 # Create a deployment directory
 rm -rf deploy
 mkdir -p deploy
 
-# Copy only the HTML file
-cp dist/index.html deploy/
+# Copy the necessary files
+cp -r pkg deploy/
+cp index.html deploy/
+cp favicon.ico deploy/
 
-# Create a simple test page
+# Create a test page with example links
 cat > deploy/test.html << 'EOL'
 <!DOCTYPE html>
 <html>

@@ -12,4 +12,4 @@ cp index.html dist/
 
 # Serve the dist directory
 cd dist
-python3 -m http.server 8080
+python3 -m http.server 8081

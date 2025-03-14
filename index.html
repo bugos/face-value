@@ -4,11 +4,33 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Face Value Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script type="module">
         import init from './pkg/face_value.js';
         init();
     </script>
     <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+        .result {
+            color: #10b981;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <div id="main"></div>

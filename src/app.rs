@@ -28,7 +28,7 @@ fn parse_params(url_str: &str) -> Vec<(String, String)> {
 fn info_row<'a>(label: &'a str, value: String, class: &'a str) -> LazyNodes<'a, 'a> {
     rsx! {
         div {
-            class: "{class}",
+            class: "{class} flex justify-between mb-3",
             label { class: "font-semibold", "{label}" }
             span { "{value}" }
         }
@@ -71,39 +71,46 @@ pub fn app(cx: Scope) -> Element {
 
     cx.render(rsx! {
         div {
-            class: "container mx-auto p-4 max-w-md",
-            style: "font-family: Arial, sans-serif;",
+            class: "container",
 
             h1 {
-                class: "text-2xl font-bold mb-4 text-center",
+                class: "text-2xl font-bold mb-6 text-center",
                 "Debt Value Calculator"
             }
 
             div {
-                class: "bg-white rounded-lg shadow-md p-6",
+                class: "card",
 
-                info_row("Initial Amount: ", amount_str, "mb-4")
-                info_row("Annual Interest Rate: ", interest_str, "mb-4")
-                info_row("Start Date: ", date_str, "mb-4")
-                info_row("Days Passed: ", days_str, "mb-4")
+                info_row("Initial Amount:", amount_str, "")
+                info_row("Annual Interest Rate:", interest_str, "")
+                info_row("Start Date:", date_str, "")
+                info_row("Days Passed:", days_str, "")
 
                 div {
-                    class: "mt-6 pt-4 border-t",
-                    label { class: "text-xl font-bold", "Current Value: " }
+                    class: "mt-6 pt-4 border-t flex justify-between",
+                    label { class: "text-xl font-bold", "Current Value:" }
                     span {
-                        class: "text-xl text-green-600",
+                        class: "text-xl result",
                         "{current_value_str}"
                     }
                 }
             }
 
-            p {
-                class: "mt-4 text-sm text-gray-600 text-center",
-                "Parameters can be added using either URL parameters (?amount=1000&interest=5) or hash (#amount=1000&interest=5)"
-            }
-            p {
-                class: "text-sm text-gray-600 text-center",
-                "Example: index.html#amount=1000&interest=5&start_date=2023-01-01"
+            div {
+                class: "mt-6 text-sm text-gray-600",
+                p {
+                    class: "text-center mb-2",
+                    "Parameters can be added using either URL parameters (?amount=1000&interest=5) or hash (#amount=1000&interest=5)"
+                }
+                p {
+                    class: "text-center",
+                    "Example: ",
+                    a {
+                        class: "text-blue-600 hover:underline",
+                        href: "#amount=1000&interest=5&start_date=2023-01-01",
+                        "amount=1000&interest=5&start_date=2023-01-01"
+                    }
+                }
             }
         }
     })

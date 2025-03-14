@@ -1,66 +1,64 @@
-# Face Value - Debt Calculator
+# Face Value Calculator
 
-A static web application built with Rust and Dioxus that calculates the current value of debt based on URL parameters. The app can run directly from your file system without a web server!
+A simple web application to calculate the current value of a debt based on the initial amount, interest rate, and start date.
+
+## Live Demo
+
+Visit the live application at: [https://bugos.github.io/face-value/](https://bugos.github.io/face-value/)
 
 ## Features
 
 - Calculate debt value based on initial amount, interest rate, and start date
-- Parameters stored in URL or hash for easy sharing
-- Real-time calculation based on days passed
-- Clean, responsive UI
-- Works directly from file system - no web server needed!
+- URL parameter support for easy sharing and bookmarking
+- Responsive design that works on mobile and desktop
 
 ## Usage
 
-You can use the calculator in two ways:
+You can use the calculator by adding parameters to the URL:
 
-1. Using URL hash parameters (works from file system):
-   ```
-   file:///path/to/index.html#amount=1000&interest=5&start_date=2023-01-01
-   ```
-
-2. Using URL query parameters (when served from a web server):
-   ```
-   http://localhost:8080/?amount=1000&interest=5&start_date=2023-01-01
-   ```
-
-Parameters:
-- `amount`: Initial debt amount (numeric)
-- `interest`: Annual interest rate as a percentage (numeric)
-- `start_date`: Start date in YYYY-MM-DD format
-
-## Building and Running
-
-1. Install Rust and Cargo:
-   ```bash
-   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-   ```
-
-2. Install Trunk (for building):
-   ```bash
-   cargo install trunk
-   ```
-
-3. Add the WASM target:
-   ```bash
-   rustup target add wasm32-unknown-unknown
-   ```
-
-4. Build the app:
-   ```bash
-   trunk build --release
-   ```
-
-5. The built files will be in the `dist` directory. You can:
-   - Open `dist/index.html` directly in your browser
-   - Host the `dist` directory on any static file server
-   - Share the files with others to run locally
-
-## Development
-
-For development, you can use:
-```bash
-trunk serve
+```
+https://bugos.github.io/face-value/#amount=1000&interest=5&start_date=2023-01-01
 ```
 
-This will start a development server with hot reloading at `http://localhost:8080` 
+Parameters:
+- `amount`: The initial debt amount (numeric)
+- `interest`: Annual interest rate as percentage (numeric)
+- `start_date`: Start date in YYYY-MM-DD format
+
+## Local Development
+
+### Prerequisites
+
+- [Rust](https://www.rust-lang.org/tools/install)
+- [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/)
+
+### Running Locally
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/bugos/face-value.git
+   cd face-value
+   ```
+
+2. Run the development server:
+   ```
+   ./serve.sh
+   ```
+
+3. Open your browser to [http://localhost:8081](http://localhost:8081)
+
+## Deployment
+
+The application is automatically deployed to GitHub Pages when changes are pushed to the main branch.
+
+To manually prepare files for deployment:
+
+```
+./deploy.sh
+```
+
+This will create a `deploy` directory with all the necessary files.
+
+## License
+
+MIT
