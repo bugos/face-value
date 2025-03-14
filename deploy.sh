@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Build the release version with inlined assets
+trunk build --release
+
+# Create a deployment directory
+rm -rf deploy
+mkdir -p deploy
+
+# Copy only the HTML file
+cp dist/index.html deploy/
+
+# Create a simple test page
+cat > deploy/test.html << 'EOL'
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Face Value - Test Links</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+        .link-group { margin: 2rem 0; }
+        a { display: block; margin: 0.5rem 0; color: #0066cc; }
+    </style>
+</head>
+<body>
+    <h1>Face Value Calculator - Test Links</h1>
+    <div class="link-group">
+        <h2>Example Links:</h2>
+        <a href="index.html#amount=1000&interest=5&start_date=2023-01-01">$1,000 at 5% from 2023-01-01</a>
+        <a href="index.html#amount=5000&interest=3.5&start_date=2024-01-01">$5,000 at 3.5% from 2024-01-01</a>
+        <a href="index.html#amount=10000&interest=7&start_date=2022-06-15">$10,000 at 7% from 2022-06-15</a>
+    </div>
+    <div class="link-group">
+        <h2>Instructions:</h2>
+        <p>Click any link above to test the calculator with different parameters.</p>
+        <p>You can also modify the URL parameters directly:</p>
+        <ul>
+            <li><code>amount</code>: The initial debt amount (numeric)</li>
+            <li><code>interest</code>: Annual interest rate as percentage (numeric)</li>
+            <li><code>start_date</code>: Start date in YYYY-MM-DD format</li>
+        </ul>
+    </div>
+</body>
+</html>
+EOL
+
+echo "Deployment files are ready in the 'deploy' directory."
+echo "You can open deploy/test.html directly in your browser!"

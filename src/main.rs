@@ -3,7 +3,7 @@ use dioxus::prelude::*;
 
 fn main() {
     wasm_logger::init(wasm_logger::Config::default());
-    dioxus_web::launch(App);
+    dioxus_web::launch(app);
 }
 
 fn parse_params(url_str: &str) -> Vec<(String, String)> {
@@ -30,7 +30,7 @@ fn parse_params(url_str: &str) -> Vec<(String, String)> {
         .unwrap_or_default()
 }
 
-fn info_row<'a>(label: &'a str, value: &'a str, class: &'a str) -> LazyNodes<'a, 'a> {
+fn info_row<'a>(label: &'a str, value: String, class: &'a str) -> LazyNodes<'a, 'a> {
     rsx! {
         div {
             class: "{class}",
@@ -40,7 +40,7 @@ fn info_row<'a>(label: &'a str, value: &'a str, class: &'a str) -> LazyNodes<'a,
     }
 }
 
-fn App(cx: Scope) -> Element {
+fn app(cx: Scope) -> Element {
     let window = web_sys::window().unwrap();
     let location = window.location();
     let href = location.href().unwrap();
@@ -68,6 +68,12 @@ fn App(cx: Scope) -> Element {
     let interest_factor = 1.0 + (interest / 100.0);
     let current_value = amount * interest_factor.powf(days_passed as f64 / 365.0);
 
+    let amount_str = format!("${:.2}", amount);
+    let interest_str = format!("{}%", interest);
+    let date_str = start_date.format("%Y-%m-%d").to_string();
+    let days_str = days_passed.to_string();
+    let current_value_str = format!("${:.2}", current_value);
+
     cx.render(rsx! {
         div {
             class: "container mx-auto p-4 max-w-md",
@@ -81,17 +87,17 @@ fn App(cx: Scope) -> Element {
             div {
                 class: "bg-white rounded-lg shadow-md p-6",
 
-                info_row("Initial Amount: ", &format!("${:.2}", amount), "mb-4")
-                info_row("Annual Interest Rate: ", &format!("{}%", interest), "mb-4")
-                info_row("Start Date: ", &start_date.format("%Y-%m-%d").to_string(), "mb-4")
-                info_row("Days Passed: ", &days_passed.to_string(), "mb-4")
+                info_row("Initial Amount: ", amount_str, "mb-4")
+                info_row("Annual Interest Rate: ", interest_str, "mb-4")
+                info_row("Start Date: ", date_str, "mb-4")
+                info_row("Days Passed: ", days_str, "mb-4")
 
                 div {
                     class: "mt-6 pt-4 border-t",
                     label { class: "text-xl font-bold", "Current Value: " }
                     span {
                         class: "text-xl text-green-600",
-                        format!("${:.2}", current_value)
+                        "{current_value_str}"
                     }
                 }
             }
