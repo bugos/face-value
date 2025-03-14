@@ -7,6 +7,8 @@ release = true
 dist = "dist"
 # The public URL from which assets are to be served.
 public_url = "/face-value/"
+# Enable asset inlining for release builds
+inline = true
 
 [[hooks]]
 stage = "pre_build"
@@ -19,7 +21,3 @@ watch = ["src", "index.html"]
 # Configure serving
 [serve]
 port = 8080
-
-# Enable asset inlining
-[build.target.release]
-inline = true
