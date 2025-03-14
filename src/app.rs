@@ -1,5 +1,6 @@
 use chrono::{NaiveDate, Utc};
 use dioxus::prelude::*;
+use wasm_bindgen::prelude::*;
 
 fn parse_params(url_str: &str) -> Vec<(String, String)> {
     let params_str = if url_str.contains('?') {
@@ -35,7 +36,43 @@ fn info_row<'a>(label: &'a str, value: String, class: &'a str) -> LazyNodes<'a, 
     }
 }
 
+// Add a function to set up the hash change listener
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = window)]
+    fn location() -> JsValue;
+
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+}
+
 pub fn app(cx: Scope) -> Element {
+    let refresh_trigger = use_state(cx, || 0);
+
+    // Set up hash change listener when the component mounts
+    use_effect(cx, (), |_| {
+        let window = web_sys::window().unwrap();
+        let document = window.document().unwrap();
+
+        // Create a closure that will be called when the hash changes
+        let closure = Closure::wrap(Box::new({
+            let refresh_trigger = refresh_trigger.clone();
+            move || {
+                refresh_trigger.set(*refresh_trigger + 1);
+            }
+        }) as Box<dyn FnMut()>);
+
+        // Add the event listener
+        window
+            .add_event_listener_with_callback("hashchange", closure.as_ref().unchecked_ref())
+            .unwrap();
+
+        // Keep the closure alive for the lifetime of the component
+        closure.forget();
+
+        || {}
+    });
+
     let window = web_sys::window().unwrap();
     let location = window.location();
     let href = location.href().unwrap();
