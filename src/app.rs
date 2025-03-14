@@ -1,18 +1,5 @@
-mod app;
-
-use wasm_bindgen::prelude::*;
-
-#[wasm_bindgen(start)]
-pub fn run() {
-    // Initialize panic hook for better error messages
-    console_error_panic_hook::set_once();
-
-    // Initialize logging
-    wasm_logger::init(wasm_logger::Config::default());
-
-    // Launch the app
-    dioxus_web::launch(app::app);
-}
+use chrono::{NaiveDate, Utc};
+use dioxus::prelude::*;
 
 fn parse_params(url_str: &str) -> Vec<(String, String)> {
     let params_str = if url_str.contains('?') {
@@ -48,7 +35,7 @@ fn info_row<'a>(label: &'a str, value: String, class: &'a str) -> LazyNodes<'a, 
     }
 }
 
-fn app(cx: Scope) -> Element {
+pub fn app(cx: Scope) -> Element {
     let window = web_sys::window().unwrap();
     let location = window.location();
     let href = location.href().unwrap();
