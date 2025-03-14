@@ -102,13 +102,35 @@ pub fn app(cx: Scope) -> Element {
                     class: "text-center mb-2",
                     "Parameters can be added using either URL parameters (?amount=1000&interest=5) or hash (#amount=1000&interest=5)"
                 }
-                p {
-                    class: "text-center",
-                    "Example: ",
-                    a {
-                        class: "text-blue-600 hover:underline",
-                        href: "#amount=1000&interest=5&start_date=2023-01-01",
-                        "amount=1000&interest=5&start_date=2023-01-01"
+
+                div {
+                    class: "mt-4 p-4 bg-gray-100 rounded-lg",
+                    h3 {
+                        class: "font-bold mb-2 text-center",
+                        "Examples:"
+                    }
+                    div {
+                        class: "grid grid-cols-1 gap-2",
+                        a {
+                            class: "text-blue-600 hover:underline text-center",
+                            href: "#amount=1000&interest=5&start_date=2023-01-01",
+                            "$1,000 at 5% from 2023-01-01"
+                        }
+                        a {
+                            class: "text-blue-600 hover:underline text-center",
+                            href: "#amount=5000&interest=3.5&start_date=2024-01-01",
+                            "$5,000 at 3.5% from 2024-01-01"
+                        }
+                        a {
+                            class: "text-blue-600 hover:underline text-center",
+                            href: "#amount=10000&interest=7&start_date=2022-06-15",
+                            "$10,000 at 7% from 2022-06-15"
+                        }
+                        a {
+                            class: "text-blue-600 hover:underline text-center",
+                            href: "#amount=25000&interest=4.25&start_date=2020-03-01",
+                            "$25,000 at 4.25% from 2020-03-01"
+                        }
                     }
                 }
             }
