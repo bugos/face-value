@@ -47,7 +47,7 @@ fn info_row<'a>(label: &'a str, value: String) -> LazyNodes<'a, 'a> {
     }
 }
 
-// Helper function to create example links with consistent behavior
+// Helper function to create example links with actual URLs
 fn example_link<'a>(
     amount: f64,
     interest: f64,
@@ -55,21 +55,14 @@ fn example_link<'a>(
     description: &'a str,
 ) -> LazyNodes<'a, 'a> {
     let params = format!(
-        "amount={}&interest={}&start_date={}",
+        "#amount={}&interest={}&start_date={}",
         amount, interest, start_date
     );
 
     rsx! {
         a {
             class: "text-blue-600 hover:underline text-center",
-            href: "javascript:void(0)",
-            onclick: move |_| {
-                let window = web_sys::window().unwrap();
-                let location = window.location();
-                let _ = location.set_hash(&params);
-                // Force a page reload to apply the new parameters
-                let _ = window.location().reload();
-            },
+            href: "{params}",
             "{description}"
         }
     }
@@ -132,7 +125,7 @@ pub fn app(cx: Scope) -> Element {
                 class: "mt-6 text-sm text-gray-600",
                 p {
                     class: "text-center mb-2",
-                    "Add parameters to the URL using ? or #, e.g. : #amount=1000&interest=5&start_date=2023-01-01"
+                    "Add parameters to the URL using '?' or '#': ?amount=1000&interest=5&start_date=2023-01-01"
                 }
 
                 div {
