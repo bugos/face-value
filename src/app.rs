@@ -1,7 +1,5 @@
 use chrono::{NaiveDate, Utc};
 use dioxus::prelude::*;
-use std::future::Future;
-use wasm_bindgen::prelude::*;
 
 fn parse_params(url_str: &str) -> Vec<(String, String)> {
     let params_str = if url_str.contains('?') {
