@@ -128,7 +128,7 @@ pub fn app(cx: Scope) -> Element {
                 class: "mt-6 text-sm text-gray-600",
                 p {
                     class: "text-center mb-2",
-                    "Parameters can be added using either URL parameters (?amount=1000&interest=5) or hash (#amount=1000&interest=5)"
+                    "Add parameters to URL: #amount=1000&interest=5&start_date=2023-01-01"
                 }
 
                 div {
