@@ -53,11 +53,18 @@ fn example_link<'a>(
     interest: f64,
     start_date: &'a str,
     description: &'a str,
+    extra_params: &'a str,
 ) -> LazyNodes<'a, 'a> {
-    let params = format!(
+    let base_params = format!(
         "#amount={}&interest={}&start_date={}",
         amount, interest, start_date
     );
+
+    let params = if extra_params.is_empty() {
+        base_params
+    } else {
+        format!("{}&{}", base_params, extra_params)
+    };
 
     rsx! {
         a {
@@ -84,15 +91,50 @@ pub fn app(cx: Scope) -> Element {
         Utc::now().date_naive(),
     );
 
-    let days_passed = (Utc::now().date_naive() - start_date).num_days();
-    let interest_factor = 1.0 + (interest / 100.0);
-    let current_value = amount * interest_factor.powf(days_passed as f64 / 365.0);
+    // New parameters
+    let currency = get_param(&params, "currency", Some, "$".to_string());
+    let compound_freq = get_param(&params, "compound", |v| v.parse::<u32>().ok(), 1);
+    let theme = get_param(&params, "theme", Some, "light".to_string());
 
-    let amount_str = format!("${:.2}", amount);
+    // Calculate days passed
+    let days_passed = (Utc::now().date_naive() - start_date).num_days();
+
+    // Calculate current value with compounding frequency
+    let interest_rate = interest / 100.0;
+    let years_passed = days_passed as f64 / 365.0;
+
+    // Apply compound interest formula: P(1 + r/n)^(nt)
+    let current_value = if compound_freq > 1 {
+        amount
+            * (1.0 + interest_rate / compound_freq as f64).powf(compound_freq as f64 * years_passed)
+    } else {
+        // Simple annual compounding
+        amount * (1.0 + interest_rate).powf(years_passed)
+    };
+
+    // Format strings with the selected currency
+    let amount_str = format!("{}{:.2}", currency, amount);
     let interest_str = format!("{}%", interest);
     let date_str = start_date.format("%Y-%m-%d").to_string();
     let days_str = days_passed.to_string();
-    let current_value_str = format!("${:.2}", current_value);
+    let current_value_str = format!("{}{:.2}", currency, current_value);
+
+    // Determine theme class
+    let theme_bg_class = if theme == "dark" {
+        "bg-gray-800 text-white"
+    } else {
+        "bg-white"
+    };
+
+    // Compounding frequency text
+    let compound_text = match compound_freq {
+        1 => "Annual",
+        2 => "Semi-annual",
+        4 => "Quarterly",
+        12 => "Monthly",
+        365 => "Daily",
+        _ => "Custom",
+    };
 
     cx.render(rsx! {
         div {
@@ -104,12 +146,13 @@ pub fn app(cx: Scope) -> Element {
             }
 
             div {
-                class: "bg-white rounded-lg shadow p-6",
+                class: format_args!("{} rounded-lg shadow p-6", theme_bg_class),
 
                 info_row("Initial Amount:", amount_str)
                 info_row("Annual Interest Rate:", interest_str)
                 info_row("Start Date:", date_str)
                 info_row("Days Passed:", days_str)
+                info_row("Compounding:", compound_text.to_string())
 
                 div {
                     class: "mt-6 pt-4 border-t flex justify-between",
@@ -125,7 +168,7 @@ pub fn app(cx: Scope) -> Element {
                 class: "mt-6 text-sm text-gray-600",
                 p {
                     class: "text-center mb-2",
-                    "Add parameters to the URL using '?' or '#': ?amount=1000&interest=5&start_date=2023-01-01"
+                    "Add parameters to the URL: #amount=1000&interest=5&start_date=2023-01-01&currency=€&compound=12&theme=dark"
                 }
 
                 div {
@@ -136,10 +179,10 @@ pub fn app(cx: Scope) -> Element {
                     }
                     div {
                         class: "grid grid-cols-1 gap-2",
-                        example_link(1000.0, 5.0, "2023-01-01", "$1,000 at 5% from 2023-01-01")
-                        example_link(5000.0, 3.5, "2024-01-01", "$5,000 at 3.5% from 2024-01-01")
-                        example_link(10000.0, 7.0, "2022-06-15", "$10,000 at 7% from 2022-06-15")
-                        example_link(25000.0, 4.25, "2020-03-01", "$25,000 at 4.25% from 2020-03-01")
+                        example_link(1000.0, 5.0, "2023-01-01", "$1,000 at 5% from 2023-01-01", "")
+                        example_link(5000.0, 3.5, "2024-01-01", "€5,000 at 3.5% from 2024-01-01", "currency=€")
+                        example_link(10000.0, 7.0, "2022-06-15", "$10,000 at 7% (monthly compounding)", "compound=12")
+                        example_link(25000.0, 4.25, "2020-03-01", "£25,000 at 4.25% (dark theme)", "currency=£&theme=dark")
                     }
                 }
             }
