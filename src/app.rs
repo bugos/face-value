@@ -68,7 +68,7 @@ fn example_link<'a>(
 
     rsx! {
         a {
-            class: "text-blue-600 hover:underline text-center",
+            class: "text-blue-300 hover:underline text-center",
             href: "{params}",
             "{description}"
         }
@@ -99,12 +99,6 @@ pub fn app(cx: Scope) -> Element {
         "$".to_string(),
     );
     let compound_freq = get_param(&params, "compound", |v| v.parse::<u32>().ok(), 1);
-    let theme = get_param(
-        &params,
-        "theme",
-        |v| Some(v.to_string()),
-        "light".to_string(),
-    );
 
     // Calculate days passed
     let days_passed = (Utc::now().date_naive() - start_date).num_days();
@@ -129,13 +123,6 @@ pub fn app(cx: Scope) -> Element {
     let days_str = days_passed.to_string();
     let current_value_str = format!("{}{:.2}", currency, current_value);
 
-    // Determine theme class
-    let theme_bg_class = if theme == "dark" {
-        "bg-gray-800 text-white"
-    } else {
-        "bg-white"
-    };
-
     // Compounding frequency text
     let compound_text = match compound_freq {
         1 => "Annual",
@@ -156,7 +143,7 @@ pub fn app(cx: Scope) -> Element {
             }
 
             div {
-                class: format_args!("{} rounded-lg shadow p-6", theme_bg_class),
+                class: "bg-gray-900 rounded-lg shadow p-6",
 
                 info_row("Initial Amount:", amount_str)
                 info_row("Annual Interest Rate:", interest_str)
@@ -165,7 +152,7 @@ pub fn app(cx: Scope) -> Element {
                 info_row("Compounding:", compound_text.to_string())
 
                 div {
-                    class: "mt-6 pt-4 border-t flex justify-between",
+                    class: "mt-6 pt-4 border-t border-gray-700 flex justify-between",
                     label { class: "text-xl font-bold", "Current Value:" }
                     span {
                         class: "text-xl font-bold result",
@@ -175,14 +162,14 @@ pub fn app(cx: Scope) -> Element {
             }
 
             div {
-                class: "mt-6 text-sm text-gray-600",
+                class: "mt-6 text-sm text-gray-300",
                 p {
                     class: "text-center mb-2",
-                    "Add parameters to the URL: #amount=1000&interest=5&start_date=2023-01-01&currency=€&compound=12&theme=dark"
+                    "Add parameters to the URL: #amount=1000&interest=5&start_date=2023-01-01&currency=€&compound=12"
                 }
 
                 div {
-                    class: "mt-4 p-4 bg-gray-100 rounded-lg",
+                    class: "mt-4 p-4 bg-gray-800 rounded-lg",
                     h3 {
                         class: "font-bold mb-2 text-center",
                         "Examples:"
@@ -192,7 +179,7 @@ pub fn app(cx: Scope) -> Element {
                         example_link(1000.0, 5.0, "2023-01-01", "$1,000 at 5% from 2023-01-01", "")
                         example_link(5000.0, 3.5, "2024-01-01", "€5,000 at 3.5% from 2024-01-01", "currency=€")
                         example_link(10000.0, 7.0, "2022-06-15", "$10,000 at 7% (monthly compounding)", "compound=12")
-                        example_link(25000.0, 4.25, "2020-03-01", "£25,000 at 4.25% (dark theme)", "currency=£&theme=dark")
+                        example_link(25000.0, 4.25, "2020-03-01", "£25,000 at 4.25%", "currency=£")
                     }
                 }
             }

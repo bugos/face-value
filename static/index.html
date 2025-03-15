@@ -13,12 +13,21 @@
     <!-- Fallback for browsers that don't support SVG favicons -->
     <link rel="alternate icon" type="image/x-icon" href="favicon.ico"/>
     <style>
-        /* Only keeping minimal custom styles that aren't easily replaced with Tailwind */
+        /* Dark theme styles */
         body {
-            background-color: #f5f5f5;
+            background-color: #1f2937; /* gray-800 */
+            color: #f9fafb; /* gray-50 */
         }
         .result {
-            color: #10b981;
+            color: #34d399; /* green-400 */
+        }
+
+        /* Make GitHub link visible on dark background */
+        .footer-link {
+            color: #93c5fd; /* blue-300 */
+        }
+        .footer-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -27,7 +36,7 @@
     <div id="main"></div>
 
     <div class="text-center mt-8">
-        <a href="https://github.com/bugos/face-value">View source on GitHub</a>
+        <a href="https://github.com/bugos/face-value" class="footer-link">View source on GitHub</a>
     </div>
 </body>
 </html>
