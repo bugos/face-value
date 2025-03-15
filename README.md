@@ -69,7 +69,9 @@ The app is automatically deployed to GitHub Pages when changes are pushed to the
 ## Project Structure
 
 - `src/` - Rust source code
-- `index.html` - HTML template
+- `static/` - Static assets
+  - `index.html` - HTML template
+  - `favicon.ico` - Favicon
 - `scripts/` - Build and deployment scripts
   - `serve.sh` - Local development script
   - `deploy.sh` - Production build script
