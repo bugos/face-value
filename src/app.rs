@@ -35,6 +35,33 @@ fn info_row<'a>(label: &'a str, value: String, class: &'a str) -> LazyNodes<'a, 
     }
 }
 
+// Helper function to create example links with consistent behavior
+fn example_link<'a>(
+    amount: f64,
+    interest: f64,
+    start_date: &'a str,
+    description: &'a str,
+) -> LazyNodes<'a, 'a> {
+    let params = format!(
+        "amount={}&interest={}&start_date={}",
+        amount, interest, start_date
+    );
+
+    rsx! {
+        a {
+            class: "text-blue-600 hover:underline text-center",
+            href: "javascript:void(0)",
+            onclick: move |_| {
+                let window = web_sys::window().unwrap();
+                let _ = window.location().set_hash(&params);
+                // Force a page reload
+                let _ = window.location().reload();
+            },
+            "{description}"
+        }
+    }
+}
+
 pub fn app(cx: Scope) -> Element {
     let window = web_sys::window().unwrap();
     let location = window.location();
@@ -111,50 +138,10 @@ pub fn app(cx: Scope) -> Element {
                     }
                     div {
                         class: "grid grid-cols-1 gap-2",
-                        a {
-                            class: "text-blue-600 hover:underline text-center",
-                            href: "javascript:void(0)",
-                            onclick: move |_| {
-                                let window = web_sys::window().unwrap();
-                                let _ = window.location().set_hash("amount=1000&interest=5&start_date=2023-01-01");
-                                // Force a page reload
-                                let _ = window.location().reload();
-                            },
-                            "$1,000 at 5% from 2023-01-01"
-                        }
-                        a {
-                            class: "text-blue-600 hover:underline text-center",
-                            href: "javascript:void(0)",
-                            onclick: move |_| {
-                                let window = web_sys::window().unwrap();
-                                let _ = window.location().set_hash("amount=5000&interest=3.5&start_date=2024-01-01");
-                                // Force a page reload
-                                let _ = window.location().reload();
-                            },
-                            "$5,000 at 3.5% from 2024-01-01"
-                        }
-                        a {
-                            class: "text-blue-600 hover:underline text-center",
-                            href: "javascript:void(0)",
-                            onclick: move |_| {
-                                let window = web_sys::window().unwrap();
-                                let _ = window.location().set_hash("amount=10000&interest=7&start_date=2022-06-15");
-                                // Force a page reload
-                                let _ = window.location().reload();
-                            },
-                            "$10,000 at 7% from 2022-06-15"
-                        }
-                        a {
-                            class: "text-blue-600 hover:underline text-center",
-                            href: "javascript:void(0)",
-                            onclick: move |_| {
-                                let window = web_sys::window().unwrap();
-                                let _ = window.location().set_hash("amount=25000&interest=4.25&start_date=2020-03-01");
-                                // Force a page reload
-                                let _ = window.location().reload();
-                            },
-                            "$25,000 at 4.25% from 2020-03-01"
-                        }
+                        example_link(1000.0, 5.0, "2023-01-01", "$1,000 at 5% from 2023-01-01")
+                        example_link(5000.0, 3.5, "2024-01-01", "$5,000 at 3.5% from 2024-01-01")
+                        example_link(10000.0, 7.0, "2022-06-15", "$10,000 at 7% from 2022-06-15")
+                        example_link(25000.0, 4.25, "2020-03-01", "$25,000 at 4.25% from 2020-03-01")
                     }
                 }
             }

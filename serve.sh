@@ -1,15 +1,17 @@
 #!/bin/bash
+set -e
 
-# Build the WASM module
+echo "Building WASM module..."
 wasm-pack build --target web
 
-# Create a dist directory
+echo "Creating dist directory..."
 mkdir -p dist
 
-# Copy the necessary files
+echo "Copying files to dist..."
 cp -r pkg dist/
 cp index.html dist/
+cp favicon.ico dist/ 2>/dev/null || touch dist/favicon.ico
 
-# Serve the dist directory
+echo "Starting local server on port 8081..."
 cd dist
-python3 -m http.server 8081
+python3 -m http.server 8081 || echo "Failed to start server. Is port 8081 already in use?"
