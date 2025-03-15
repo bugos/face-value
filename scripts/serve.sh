@@ -7,10 +7,9 @@ wasm-pack build --target web
 echo "Creating dist directory..."
 mkdir -p dist
 
-echo "Copying files to dist..."
+echo "Copying static files to dist..."
+cp -r static/* dist/
 cp -r pkg dist/
-cp index.html dist/
-cp favicon.ico dist/ 2>/dev/null || touch dist/favicon.ico
 
 echo "Starting local server on port 8081..."
 cd dist
