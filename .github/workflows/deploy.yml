@@ -30,12 +30,9 @@ jobs:
 
       - name: Build
         run: |
-          wasm-pack build --target web
-          mkdir -p dist
-          cp -r pkg dist/
-          cp index.html dist/
-          cp favicon.ico dist/ || touch dist/favicon.ico
-          cp deploy/test.html dist/ || echo "No test.html found"
+          # Use the deploy.sh script to build the project
+          bash ./deploy.sh
+          # The dist directory now contains all the files we need
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

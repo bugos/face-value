@@ -1,19 +1,20 @@
 #!/bin/bash
+set -e
 
-# Build the WASM module
+echo "Building WASM module..."
 wasm-pack build --target web
 
-# Create a deployment directory
-rm -rf deploy
-mkdir -p deploy
+echo "Creating dist directory..."
+rm -rf dist
+mkdir -p dist
 
-# Copy the necessary files
-cp -r pkg deploy/
-cp index.html deploy/
-cp favicon.ico deploy/
+echo "Copying files to dist directory..."
+cp -r pkg dist/
+cp index.html dist/
+cp favicon.ico dist/ 2>/dev/null || touch dist/favicon.ico
 
-# Create a test page with example links
-cat > deploy/test.html << 'EOL'
+echo "Creating test page with example links..."
+cat > dist/test.html << 'EOL'
 <!DOCTYPE html>
 <html>
 <head>
@@ -91,8 +92,8 @@ cat > deploy/test.html << 'EOL'
 EOL
 
 # Also create a copy of test.html in the root directory for GitHub Actions
-cp deploy/test.html ./test.html
+cp dist/test.html ./test.html
 
-echo "Deployment files are ready in the 'deploy' directory."
-echo "Your app will be available at: https://bugos.github.io/face-value/"
-echo "You can view the deployment status at: https://github.com/bugos/face-value/actions"
+echo "✅ Deployment files are ready in the 'dist' directory."
+echo "📱 Your app will be available at: https://bugos.github.io/face-value/"
+echo "🔍 You can view the deployment status at: https://github.com/bugos/face-value/actions"
