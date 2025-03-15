@@ -25,6 +25,18 @@ fn parse_params(url_str: &str) -> Vec<(String, String)> {
         .unwrap_or_default()
 }
 
+// Helper function to extract a parameter value with a default
+fn get_param<T, F>(params: &[(String, String)], key: &str, parser: F, default: T) -> T
+where
+    F: FnOnce(&str) -> Option<T>,
+{
+    params
+        .iter()
+        .find(|(k, _)| k == key)
+        .and_then(|(_, v)| parser(v))
+        .unwrap_or(default)
+}
+
 fn info_row<'a>(label: &'a str, value: String) -> LazyNodes<'a, 'a> {
     rsx! {
         div {
@@ -69,23 +81,15 @@ pub fn app(cx: Scope) -> Element {
     let href = location.href().unwrap();
     let params = parse_params(&href);
 
-    let amount = params
-        .iter()
-        .find(|(k, _)| k == "amount")
-        .and_then(|(_, v)| v.parse::<f64>().ok())
-        .unwrap_or(0.0);
-
-    let interest = params
-        .iter()
-        .find(|(k, _)| k == "interest")
-        .and_then(|(_, v)| v.parse::<f64>().ok())
-        .unwrap_or(0.0);
-
-    let start_date = params
-        .iter()
-        .find(|(k, _)| k == "start_date")
-        .and_then(|(_, v)| NaiveDate::parse_from_str(v, "%Y-%m-%d").ok())
-        .unwrap_or_else(|| Utc::now().date_naive());
+    // Extract parameters using the helper function
+    let amount = get_param(&params, "amount", |v| v.parse::<f64>().ok(), 0.0);
+    let interest = get_param(&params, "interest", |v| v.parse::<f64>().ok(), 0.0);
+    let start_date = get_param(
+        &params,
+        "start_date",
+        |v| NaiveDate::parse_from_str(v, "%Y-%m-%d").ok(),
+        Utc::now().date_naive(),
+    );
 
     let days_passed = (Utc::now().date_naive() - start_date).num_days();
     let interest_factor = 1.0 + (interest / 100.0);
@@ -128,7 +132,7 @@ pub fn app(cx: Scope) -> Element {
                 class: "mt-6 text-sm text-gray-600",
                 p {
                     class: "text-center mb-2",
-                    "Add parameters to URL: #amount=1000&interest=5&start_date=2023-01-01"
+                    "Add parameters to the URL using ? or #, e.g. : #amount=1000&interest=5&start_date=2023-01-01"
                 }
 
                 div {
