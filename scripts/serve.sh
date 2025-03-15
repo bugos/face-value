@@ -11,6 +11,10 @@ echo "Copying static files to dist..."
 cp -r static/* dist/
 cp -r pkg dist/
 
-echo "Starting local server on port 8081..."
-cd dist
-python3 -m http.server 8081 || echo "Failed to start server. Is port 8081 already in use?"
+# Try different ports if the default one is in use
+for PORT in 8081 8082 8083 8084 8085; do
+  echo "Attempting to start server on port $PORT..."
+  cd dist
+  python3 -m http.server $PORT && break || echo "Port $PORT is in use, trying next port..."
+  cd ..
+done

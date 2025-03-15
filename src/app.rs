@@ -92,9 +92,19 @@ pub fn app(cx: Scope) -> Element {
     );
 
     // New parameters
-    let currency = get_param(&params, "currency", Some, "$".to_string());
+    let currency = get_param(
+        &params,
+        "currency",
+        |v| Some(v.to_string()),
+        "$".to_string(),
+    );
     let compound_freq = get_param(&params, "compound", |v| v.parse::<u32>().ok(), 1);
-    let theme = get_param(&params, "theme", Some, "light".to_string());
+    let theme = get_param(
+        &params,
+        "theme",
+        |v| Some(v.to_string()),
+        "light".to_string(),
+    );
 
     // Calculate days passed
     let days_passed = (Utc::now().date_naive() - start_date).num_days();
