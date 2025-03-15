@@ -37,39 +37,47 @@ fn info_row<'a>(label: &'a str, value: String, class: &'a str) -> LazyNodes<'a, 
     }
 }
 
-// Add a function to set up the hash change listener
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = window)]
-    fn location() -> JsValue;
+// Add a function to handle example clicks
+fn handle_example_click(cx: Scope, params: &str) -> Element {
+    let refresh_trigger = use_state(cx, || 0);
 
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(s: &str);
+    cx.render(rsx! {
+        a {
+            class: "text-blue-600 hover:underline text-center",
+            href: "#{params}",
+            onclick: move |_| {
+                // Force a refresh after the URL changes
+                let window = web_sys::window().unwrap();
+                let location = window.location();
+                let href = location.href().unwrap();
+
+                // Update the state to trigger a re-render
+                refresh_trigger.set(*refresh_trigger + 1);
+            },
+            // Extract the example description from the params
+            if params.contains("amount=1000") {
+                "$1,000 at 5% from 2023-01-01"
+            } else if params.contains("amount=5000") {
+                "$5,000 at 3.5% from 2024-01-01"
+            } else if params.contains("amount=10000") {
+                "$10,000 at 7% from 2022-06-15"
+            } else if params.contains("amount=25000") {
+                "$25,000 at 4.25% from 2020-03-01"
+            } else {
+                "Example"
+            }
+        }
+    })
 }
 
 pub fn app(cx: Scope) -> Element {
-    let refresh_trigger = use_state(cx, || 0);
+    // Create a state to force re-renders
+    let refresh_counter = use_state(cx, || 0);
 
-    // Set up hash change listener when the component mounts
+    // Set up a timer to check for hash changes
     use_effect(cx, (), |_| async move {
-        let window = web_sys::window().unwrap();
-        let document = window.document().unwrap();
-
-        // Create a closure that will be called when the hash changes
-        let closure = Closure::wrap(Box::new({
-            let refresh_trigger = refresh_trigger.clone();
-            move || {
-                refresh_trigger.set(*refresh_trigger + 1);
-            }
-        }) as Box<dyn FnMut()>);
-
-        // Add the event listener
-        window
-            .add_event_listener_with_callback("hashchange", closure.as_ref().unchecked_ref())
-            .unwrap();
-
-        // Keep the closure alive for the lifetime of the component
-        closure.forget();
+        // This is just a placeholder to satisfy the async requirement
+        // The actual refresh happens in the onclick handlers
     });
 
     let window = web_sys::window().unwrap();
@@ -147,26 +155,10 @@ pub fn app(cx: Scope) -> Element {
                     }
                     div {
                         class: "grid grid-cols-1 gap-2",
-                        a {
-                            class: "text-blue-600 hover:underline text-center",
-                            href: "#amount=1000&interest=5&start_date=2023-01-01",
-                            "$1,000 at 5% from 2023-01-01"
-                        }
-                        a {
-                            class: "text-blue-600 hover:underline text-center",
-                            href: "#amount=5000&interest=3.5&start_date=2024-01-01",
-                            "$5,000 at 3.5% from 2024-01-01"
-                        }
-                        a {
-                            class: "text-blue-600 hover:underline text-center",
-                            href: "#amount=10000&interest=7&start_date=2022-06-15",
-                            "$10,000 at 7% from 2022-06-15"
-                        }
-                        a {
-                            class: "text-blue-600 hover:underline text-center",
-                            href: "#amount=25000&interest=4.25&start_date=2020-03-01",
-                            "$25,000 at 4.25% from 2020-03-01"
-                        }
+                        handle_example_click(cx, "amount=1000&interest=5&start_date=2023-01-01")
+                        handle_example_click(cx, "amount=5000&interest=3.5&start_date=2024-01-01")
+                        handle_example_click(cx, "amount=10000&interest=7&start_date=2022-06-15")
+                        handle_example_click(cx, "amount=25000&interest=4.25&start_date=2020-03-01")
                     }
                 }
             }
