@@ -1,14 +1,12 @@
 use chrono::{NaiveDate, Utc};
 use dioxus::prelude::*;
 
+// Parse URL parameters from either query string or hash fragment
 fn parse_params(url_str: &str) -> Vec<(String, String)> {
-    let params_str = if url_str.contains('?') {
-        url_str.split('?').nth(1)
-    } else if url_str.contains('#') {
-        url_str.split('#').nth(1)
-    } else {
-        None
-    };
+    let params_str = url_str
+        .split('?')
+        .nth(1)
+        .or_else(|| url_str.split('#').nth(1));
 
     params_str
         .map(|s| {
@@ -37,6 +35,7 @@ where
         .unwrap_or(default)
 }
 
+// Display a label-value row
 fn info_row<'a>(label: &'a str, value: String) -> LazyNodes<'a, 'a> {
     rsx! {
         div {
@@ -47,7 +46,7 @@ fn info_row<'a>(label: &'a str, value: String) -> LazyNodes<'a, 'a> {
     }
 }
 
-// Helper function to create example links with actual URLs
+// Create an example link with parameters
 fn example_link<'a>(
     amount: f64,
     interest: f64,
@@ -55,16 +54,16 @@ fn example_link<'a>(
     description: &'a str,
     extra_params: &'a str,
 ) -> LazyNodes<'a, 'a> {
-    let base_params = format!(
-        "?amount={}&interest={}&start_date={}",
-        amount, interest, start_date
-    );
-
-    let params = if extra_params.is_empty() {
-        base_params
+    let extra = if extra_params.is_empty() {
+        String::new()
     } else {
-        format!("{}&{}", base_params, extra_params)
+        format!("&{}", extra_params)
     };
+
+    let params = format!(
+        "?amount={}&interest={}&start_date={}{}",
+        amount, interest, start_date, extra
+    );
 
     rsx! {
         a {
@@ -75,13 +74,41 @@ fn example_link<'a>(
     }
 }
 
+// Get compound frequency description
+fn compound_description(freq: u32) -> &'static str {
+    match freq {
+        1 => "Annual",
+        2 => "Semi-annual",
+        4 => "Quarterly",
+        12 => "Monthly",
+        365 => "Daily",
+        _ => "Custom",
+    }
+}
+
+// Calculate compound interest
+fn calculate_compound_interest(
+    amount: f64,
+    interest_rate: f64,
+    years: f64,
+    compound_freq: u32,
+) -> f64 {
+    if compound_freq > 1 {
+        // Compound interest formula: P(1 + r/n)^(nt)
+        amount * (1.0 + interest_rate / compound_freq as f64).powf(compound_freq as f64 * years)
+    } else {
+        // Simple annual compounding
+        amount * (1.0 + interest_rate).powf(years)
+    }
+}
+
 pub fn app(cx: Scope) -> Element {
+    // Get URL parameters
     let window = web_sys::window().unwrap();
-    let location = window.location();
-    let href = location.href().unwrap();
+    let href = window.location().href().unwrap();
     let params = parse_params(&href);
 
-    // Extract parameters using the helper function
+    // Extract parameters
     let amount = get_param(&params, "amount", |v| v.parse::<f64>().ok(), 0.0);
     let interest = get_param(&params, "interest", |v| v.parse::<f64>().ok(), 0.0);
     let start_date = get_param(
@@ -90,43 +117,24 @@ pub fn app(cx: Scope) -> Element {
         |v| NaiveDate::parse_from_str(v, "%Y-%m-%d").ok(),
         Utc::now().date_naive(),
     );
-
-    // New parameters
     let compound_freq = get_param(&params, "compound", |v| v.parse::<u32>().ok(), 1);
 
-    // Calculate days passed
+    // Calculate values
     let days_passed = (Utc::now().date_naive() - start_date).num_days();
-
-    // Calculate current value with compounding frequency
-    let interest_rate = interest / 100.0;
     let years_passed = days_passed as f64 / 365.0;
+    let interest_rate = interest / 100.0;
+    let current_value =
+        calculate_compound_interest(amount, interest_rate, years_passed, compound_freq);
 
-    // Apply compound interest formula: P(1 + r/n)^(nt)
-    let current_value = if compound_freq > 1 {
-        amount
-            * (1.0 + interest_rate / compound_freq as f64).powf(compound_freq as f64 * years_passed)
-    } else {
-        // Simple annual compounding
-        amount * (1.0 + interest_rate).powf(years_passed)
-    };
-
-    // Format strings
+    // Format display strings
     let amount_str = format!("${:.2}", amount);
     let interest_str = format!("{}%", interest);
     let date_str = start_date.format("%Y-%m-%d").to_string();
     let days_str = days_passed.to_string();
     let current_value_str = format!("${:.2}", current_value);
+    let compound_text = compound_description(compound_freq);
 
-    // Compounding frequency text
-    let compound_text = match compound_freq {
-        1 => "Annual",
-        2 => "Semi-annual",
-        4 => "Quarterly",
-        12 => "Monthly",
-        365 => "Daily",
-        _ => "Custom",
-    };
-
+    // Render UI
     cx.render(rsx! {
         div {
             class: "max-w-lg mx-auto p-6",
@@ -136,6 +144,7 @@ pub fn app(cx: Scope) -> Element {
                 "Debt Value Calculator"
             }
 
+            // Main calculator card
             div {
                 class: "bg-gray-900 rounded-lg shadow p-6",
 
@@ -155,6 +164,7 @@ pub fn app(cx: Scope) -> Element {
                 }
             }
 
+            // Help and examples section
             div {
                 class: "mt-6 text-sm text-gray-300",
                 p {
