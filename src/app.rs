@@ -1,7 +1,7 @@
 use chrono::{NaiveDate, Utc};
 use dioxus::prelude::*;
-use wasm_bindgen::prelude::*;
 use std::future::Future;
+use wasm_bindgen::prelude::*;
 
 fn parse_params(url_str: &str) -> Vec<(String, String)> {
     let params_str = if url_str.contains('?') {
@@ -37,49 +37,7 @@ fn info_row<'a>(label: &'a str, value: String, class: &'a str) -> LazyNodes<'a, 
     }
 }
 
-// Add a function to handle example clicks
-fn handle_example_click(cx: Scope, params: &str) -> Element {
-    let refresh_trigger = use_state(cx, || 0);
-
-    cx.render(rsx! {
-        a {
-            class: "text-blue-600 hover:underline text-center",
-            href: "#{params}",
-            onclick: move |_| {
-                // Force a refresh after the URL changes
-                let window = web_sys::window().unwrap();
-                let location = window.location();
-                let href = location.href().unwrap();
-
-                // Update the state to trigger a re-render
-                refresh_trigger.set(*refresh_trigger + 1);
-            },
-            // Extract the example description from the params
-            if params.contains("amount=1000") {
-                "$1,000 at 5% from 2023-01-01"
-            } else if params.contains("amount=5000") {
-                "$5,000 at 3.5% from 2024-01-01"
-            } else if params.contains("amount=10000") {
-                "$10,000 at 7% from 2022-06-15"
-            } else if params.contains("amount=25000") {
-                "$25,000 at 4.25% from 2020-03-01"
-            } else {
-                "Example"
-            }
-        }
-    })
-}
-
 pub fn app(cx: Scope) -> Element {
-    // Create a state to force re-renders
-    let refresh_counter = use_state(cx, || 0);
-
-    // Set up a timer to check for hash changes
-    use_effect(cx, (), |_| async move {
-        // This is just a placeholder to satisfy the async requirement
-        // The actual refresh happens in the onclick handlers
-    });
-
     let window = web_sys::window().unwrap();
     let location = window.location();
     let href = location.href().unwrap();
@@ -155,10 +113,50 @@ pub fn app(cx: Scope) -> Element {
                     }
                     div {
                         class: "grid grid-cols-1 gap-2",
-                        handle_example_click(cx, "amount=1000&interest=5&start_date=2023-01-01")
-                        handle_example_click(cx, "amount=5000&interest=3.5&start_date=2024-01-01")
-                        handle_example_click(cx, "amount=10000&interest=7&start_date=2022-06-15")
-                        handle_example_click(cx, "amount=25000&interest=4.25&start_date=2020-03-01")
+                        a {
+                            class: "text-blue-600 hover:underline text-center",
+                            href: "javascript:void(0)",
+                            onclick: move |_| {
+                                let window = web_sys::window().unwrap();
+                                let _ = window.location().set_hash("amount=1000&interest=5&start_date=2023-01-01");
+                                // Force a page reload
+                                let _ = window.location().reload();
+                            },
+                            "$1,000 at 5% from 2023-01-01"
+                        }
+                        a {
+                            class: "text-blue-600 hover:underline text-center",
+                            href: "javascript:void(0)",
+                            onclick: move |_| {
+                                let window = web_sys::window().unwrap();
+                                let _ = window.location().set_hash("amount=5000&interest=3.5&start_date=2024-01-01");
+                                // Force a page reload
+                                let _ = window.location().reload();
+                            },
+                            "$5,000 at 3.5% from 2024-01-01"
+                        }
+                        a {
+                            class: "text-blue-600 hover:underline text-center",
+                            href: "javascript:void(0)",
+                            onclick: move |_| {
+                                let window = web_sys::window().unwrap();
+                                let _ = window.location().set_hash("amount=10000&interest=7&start_date=2022-06-15");
+                                // Force a page reload
+                                let _ = window.location().reload();
+                            },
+                            "$10,000 at 7% from 2022-06-15"
+                        }
+                        a {
+                            class: "text-blue-600 hover:underline text-center",
+                            href: "javascript:void(0)",
+                            onclick: move |_| {
+                                let window = web_sys::window().unwrap();
+                                let _ = window.location().set_hash("amount=25000&interest=4.25&start_date=2020-03-01");
+                                // Force a page reload
+                                let _ = window.location().reload();
+                            },
+                            "$25,000 at 4.25% from 2020-03-01"
+                        }
                     }
                 }
             }
