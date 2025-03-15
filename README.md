@@ -45,7 +45,7 @@ rustup target add wasm32-unknown-unknown
 ### Local Development
 
 ```bash
-./serve.sh
+./scripts/serve.sh
 ```
 
 Then open [http://localhost:8081](http://localhost:8081)
@@ -53,7 +53,7 @@ Then open [http://localhost:8081](http://localhost:8081)
 ### Production Build
 
 ```bash
-./deploy.sh
+./scripts/deploy.sh
 ```
 
 ## Deployment
@@ -62,7 +62,7 @@ The app is automatically deployed to GitHub Pages when changes are pushed to the
 
 ### Manual Deployment
 
-1. Run `./deploy.sh`
+1. Run `./scripts/deploy.sh`
 2. Commit and push to main branch
 3. GitHub Actions will handle the deployment
 
@@ -70,9 +70,10 @@ The app is automatically deployed to GitHub Pages when changes are pushed to the
 
 - `src/` - Rust source code
 - `index.html` - HTML template
-- `serve.sh` - Local development script
-- `deploy.sh` - Production build script
-- `.github/workflows/deploy.yml` - GitHub Actions workflow
+- `scripts/` - Build and deployment scripts
+  - `serve.sh` - Local development script
+  - `deploy.sh` - Production build script
+- `.github/workflows/` - GitHub Actions workflows
 
 ## License
 

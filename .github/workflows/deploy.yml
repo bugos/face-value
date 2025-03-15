@@ -31,7 +31,7 @@ jobs:
       - name: Build
         run: |
           # Use the deploy.sh script to build the project
-          bash ./deploy.sh
+          bash ./scripts/deploy.sh
           # The dist directory now contains all the files we need
 
       - name: Setup Pages
