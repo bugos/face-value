@@ -30,15 +30,169 @@
             color: #10b981;
             font-weight: bold;
         }
-        /* Remove test page styles since they're handled in app.rs */
+        /* Additional styles from app.rs */
+        .flex {
+            display: flex;
+        }
+        .justify-between {
+            justify-content: space-between;
+        }
+        .mb-3 {
+            margin-bottom: 0.75rem;
+        }
+        .font-semibold {
+            font-weight: 600;
+        }
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+        .font-bold {
+            font-weight: 700;
+        }
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .mt-6 {
+            margin-top: 1.5rem;
+        }
+        .pt-4 {
+            padding-top: 1rem;
+        }
+        .border-t {
+            border-top: 1px solid #e5e7eb;
+        }
+        .text-xl {
+            font-size: 1.25rem;
+        }
+        .text-sm {
+            font-size: 0.875rem;
+        }
+        .text-gray-600 {
+            color: #4b5563;
+        }
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+        .mt-4 {
+            margin-top: 1rem;
+        }
+        .p-4 {
+            padding: 1rem;
+        }
+        .bg-gray-100 {
+            background-color: #f3f4f6;
+        }
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+        .grid {
+            display: grid;
+        }
+        .grid-cols-1 {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+        .gap-2 {
+            gap: 0.5rem;
+        }
+        .text-blue-600 {
+            color: #2563eb;
+        }
+        .hover\:underline:hover {
+            text-decoration: underline;
+        }
+        .mt-8 {
+            margin-top: 2rem;
+        }
     </style>
 </head>
 <body>
+    <!-- This div will be populated by the Dioxus app -->
     <div id="main"></div>
 
-    <!-- Footer moved outside of examples section -->
+    <!-- Static HTML structure that mirrors the Dioxus app structure -->
+    <!-- This is for reference and will be hidden/replaced when the app loads -->
+    <div id="static-fallback" class="container" style="display: none;">
+        <h1 class="text-2xl font-bold mb-6 text-center">
+            Debt Value Calculator
+        </h1>
+
+        <div class="card">
+            <div class="flex justify-between mb-3">
+                <label class="font-semibold">Initial Amount:</label>
+                <span>$0.00</span>
+            </div>
+            <div class="flex justify-between mb-3">
+                <label class="font-semibold">Annual Interest Rate:</label>
+                <span>0%</span>
+            </div>
+            <div class="flex justify-between mb-3">
+                <label class="font-semibold">Start Date:</label>
+                <span>YYYY-MM-DD</span>
+            </div>
+            <div class="flex justify-between mb-3">
+                <label class="font-semibold">Days Passed:</label>
+                <span>0</span>
+            </div>
+
+            <div class="mt-6 pt-4 border-t flex justify-between">
+                <label class="text-xl font-bold">Current Value:</label>
+                <span class="text-xl result">$0.00</span>
+            </div>
+        </div>
+
+        <div class="mt-6 text-sm text-gray-600">
+            <p class="text-center mb-2">
+                Parameters can be added using either URL parameters (?amount=1000&interest=5) or hash (#amount=1000&interest=5)
+            </p>
+
+            <div class="mt-4 p-4 bg-gray-100 rounded-lg">
+                <h3 class="font-bold mb-2 text-center">
+                    Examples:
+                </h3>
+                <div class="grid grid-cols-1 gap-2">
+                    <a class="text-blue-600 hover:underline text-center" href="#amount=1000&interest=5&start_date=2023-01-01">$1,000 at 5% from 2023-01-01</a>
+                    <a class="text-blue-600 hover:underline text-center" href="#amount=5000&interest=3.5&start_date=2024-01-01">$5,000 at 3.5% from 2024-01-01</a>
+                    <a class="text-blue-600 hover:underline text-center" href="#amount=10000&interest=7&start_date=2022-06-15">$10,000 at 7% from 2022-06-15</a>
+                    <a class="text-blue-600 hover:underline text-center" href="#amount=25000&interest=4.25&start_date=2020-03-01">$25,000 at 4.25% from 2020-03-01</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="text-center mt-8">
         <a href="https://github.com/bugos/face-value">View source on GitHub</a>
     </div>
+
+    <script>
+        // Show static fallback until the Dioxus app loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainDiv = document.getElementById('main');
+            const fallbackDiv = document.getElementById('static-fallback');
+
+            // If main div is empty, show the fallback
+            if (mainDiv && fallbackDiv && !mainDiv.hasChildNodes()) {
+                fallbackDiv.style.display = 'block';
+
+                // Hide fallback when main content loads
+                const observer = new MutationObserver(function(mutations) {
+                    if (mainDiv.hasChildNodes()) {
+                        fallbackDiv.style.display = 'none';
+                        observer.disconnect();
+                    }
+                });
+
+                observer.observe(mainDiv, { childList: true });
+
+                // Fallback timeout - hide static content after 5 seconds regardless
+                setTimeout(function() {
+                    fallbackDiv.style.display = 'none';
+                    observer.disconnect();
+                }, 5000);
+            }
+        });
+    </script>
 </body>
 </html>
