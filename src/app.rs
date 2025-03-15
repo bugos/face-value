@@ -1,6 +1,7 @@
 use chrono::{NaiveDate, Utc};
 use dioxus::prelude::*;
 use wasm_bindgen::prelude::*;
+use std::future::Future;
 
 fn parse_params(url_str: &str) -> Vec<(String, String)> {
     let params_str = if url_str.contains('?') {
@@ -50,7 +51,7 @@ pub fn app(cx: Scope) -> Element {
     let refresh_trigger = use_state(cx, || 0);
 
     // Set up hash change listener when the component mounts
-    use_effect(cx, (), |_| {
+    use_effect(cx, (), |_| async move {
         let window = web_sys::window().unwrap();
         let document = window.document().unwrap();
 
@@ -69,8 +70,6 @@ pub fn app(cx: Scope) -> Element {
 
         // Keep the closure alive for the lifetime of the component
         closure.forget();
-
-        || {}
     });
 
     let window = web_sys::window().unwrap();
