@@ -50,7 +50,14 @@ fn example_link<'a>(
     rsx! {
         a {
             class: "text-blue-600 hover:underline text-center",
-            href: "#{params}",
+            href: "javascript:void(0)",
+            onclick: move |_| {
+                let window = web_sys::window().unwrap();
+                let location = window.location();
+                let _ = location.set_hash(&params);
+                // Force a page reload to apply the new parameters
+                let _ = window.location().reload();
+            },
             "{description}"
         }
     }
