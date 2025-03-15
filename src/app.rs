@@ -25,10 +25,10 @@ fn parse_params(url_str: &str) -> Vec<(String, String)> {
         .unwrap_or_default()
 }
 
-fn info_row<'a>(label: &'a str, value: String, class: &'a str) -> LazyNodes<'a, 'a> {
+fn info_row<'a>(label: &'a str, value: String) -> LazyNodes<'a, 'a> {
     rsx! {
         div {
-            class: "{class} flex justify-between mb-3",
+            class: "flex justify-between mb-3",
             label { class: "font-semibold", "{label}" }
             span { "{value}" }
         }
@@ -99,7 +99,7 @@ pub fn app(cx: Scope) -> Element {
 
     cx.render(rsx! {
         div {
-            class: "container",
+            class: "max-w-lg mx-auto p-6",
 
             h1 {
                 class: "text-2xl font-bold mb-6 text-center",
@@ -107,18 +107,18 @@ pub fn app(cx: Scope) -> Element {
             }
 
             div {
-                class: "card",
+                class: "bg-white rounded-lg shadow p-6",
 
-                info_row("Initial Amount:", amount_str, "")
-                info_row("Annual Interest Rate:", interest_str, "")
-                info_row("Start Date:", date_str, "")
-                info_row("Days Passed:", days_str, "")
+                info_row("Initial Amount:", amount_str)
+                info_row("Annual Interest Rate:", interest_str)
+                info_row("Start Date:", date_str)
+                info_row("Days Passed:", days_str)
 
                 div {
                     class: "mt-6 pt-4 border-t flex justify-between",
                     label { class: "text-xl font-bold", "Current Value:" }
                     span {
-                        class: "text-xl result",
+                        class: "text-xl font-bold result",
                         "{current_value_str}"
                     }
                 }

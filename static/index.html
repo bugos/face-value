@@ -11,104 +11,16 @@
     </script>
     <link rel="icon" type="image/x-icon" href="favicon.ico"/>
     <style>
+        /* Only keeping minimal custom styles that aren't easily replaced with Tailwind */
         body {
             background-color: #f5f5f5;
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            max-width: 500px;
-            margin: 2rem auto;
-            padding: 1.5rem;
-        }
-        .card {
-            background-color: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
         }
         .result {
             color: #10b981;
-            font-weight: bold;
-        }
-        /* Additional styles from app.rs */
-        .flex {
-            display: flex;
-        }
-        .justify-between {
-            justify-content: space-between;
-        }
-        .mb-3 {
-            margin-bottom: 0.75rem;
-        }
-        .font-semibold {
-            font-weight: 600;
-        }
-        .text-2xl {
-            font-size: 1.5rem;
-        }
-        .font-bold {
-            font-weight: 700;
-        }
-        .mb-6 {
-            margin-bottom: 1.5rem;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .mt-6 {
-            margin-top: 1.5rem;
-        }
-        .pt-4 {
-            padding-top: 1rem;
-        }
-        .border-t {
-            border-top: 1px solid #e5e7eb;
-        }
-        .text-xl {
-            font-size: 1.25rem;
-        }
-        .text-sm {
-            font-size: 0.875rem;
-        }
-        .text-gray-600 {
-            color: #4b5563;
-        }
-        .mb-2 {
-            margin-bottom: 0.5rem;
-        }
-        .mt-4 {
-            margin-top: 1rem;
-        }
-        .p-4 {
-            padding: 1rem;
-        }
-        .bg-gray-100 {
-            background-color: #f3f4f6;
-        }
-        .rounded-lg {
-            border-radius: 0.5rem;
-        }
-        .grid {
-            display: grid;
-        }
-        .grid-cols-1 {
-            grid-template-columns: repeat(1, minmax(0, 1fr));
-        }
-        .gap-2 {
-            gap: 0.5rem;
-        }
-        .text-blue-600 {
-            color: #2563eb;
-        }
-        .hover\:underline:hover {
-            text-decoration: underline;
-        }
-        .mt-8 {
-            margin-top: 2rem;
         }
     </style>
 </head>
-<body>
+<body class="font-sans">
     <!-- This div will be populated by the Dioxus app -->
     <div id="main"></div>
 
